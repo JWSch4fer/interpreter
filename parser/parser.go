@@ -80,7 +80,7 @@ func New(l *lexer.Lexer) *Parser {
 }
 
 func (p *Parser) parseInfixExpression(left ast.Expression) ast.Expression {
-	defer untrace(trace("parseInfixExpression"))
+	// defer untrace(trace("parseInfixExpression"))
 
 	expression := &ast.InfixExpression{
 		Token:    p.currToken,
@@ -95,7 +95,7 @@ func (p *Parser) parseInfixExpression(left ast.Expression) ast.Expression {
 }
 
 func (p *Parser) parsePrefixExpression() ast.Expression {
-	defer untrace(trace("parsePrefixExpression"))
+	// defer untrace(trace("parsePrefixExpression"))
 	expression := &ast.PrefixExpression{
 		Token:    p.currToken,
 		Operator: p.currToken.Literal,
@@ -153,7 +153,7 @@ func (p *Parser) parseStatement() ast.Statement {
 }
 
 func (p *Parser) parseExpressionStatement() *ast.ExpressionStatement {
-	defer untrace(trace("parseExpressionStatement"))
+	// defer untrace(trace("parseExpressionStatement"))
 	stmt := &ast.ExpressionStatement{Token: p.currToken}
 
 	stmt.Expression = p.parseExpression(LOWEST)
@@ -161,12 +161,13 @@ func (p *Parser) parseExpressionStatement() *ast.ExpressionStatement {
 	if p.peekTokenIs(token.SEMICOLON) {
 		p.NextToken()
 	}
+
 	return stmt
 }
 
 // read return tokens until we hit a SEMICOLON
-func (p *Parser) parseReturnStatement() *ast.RetrunStatement {
-	stmt := &ast.RetrunStatement{Token: p.currToken}
+func (p *Parser) parseReturnStatement() *ast.ReturnStatement {
+	stmt := &ast.ReturnStatement{Token: p.currToken}
 
 	p.NextToken()
 
@@ -231,7 +232,7 @@ func (p *Parser) registerInfix(tokenType token.TokenType, fn infixParseFn) {
 
 // using Pratt parsing
 func (p *Parser) parseExpression(precedence int) ast.Expression {
-	defer untrace(trace("parseExpression"))
+	// defer untrace(trace("parseExpression"))
 	prefix := p.prefixParseFns[p.currToken.Type]
 	if prefix == nil {
 		p.noPrefixParseFnError(p.currToken.Type)
@@ -254,7 +255,7 @@ func (p *Parser) parseExpression(precedence int) ast.Expression {
 }
 
 func (p *Parser) parseIntegerLiteral() ast.Expression {
-	defer untrace(trace("parseIntegerLiteral"))
+	// defer untrace(trace("parseIntegerLiteral"))
 	lit := &ast.IntegerLiteral{Token: p.currToken}
 
 	value, err := strconv.ParseInt(p.currToken.Literal, 0, 64)

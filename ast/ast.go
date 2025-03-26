@@ -16,7 +16,7 @@ type Statement interface {
 	statementNode()
 }
 
-type RetrunStatement struct {
+type ReturnStatement struct {
 	Token       token.Token // the return token
 	ReturnValue Expression
 }
@@ -62,8 +62,8 @@ func (ls *LetStatement) TokenLiteral() string { return ls.Token.Literal }
 func (i *Identifier) expressionNode()      {}
 func (i *Identifier) TokenLiteral() string { return i.Token.Literal }
 
-func (rs *RetrunStatement) statementNode()       {}
-func (rs *RetrunStatement) TokenLiteral() string { return rs.Token.Literal }
+func (rs *ReturnStatement) statementNode()       {}
+func (rs *ReturnStatement) TokenLiteral() string { return rs.Token.Literal }
 
 func (es *ExpressionStatement) statementNode()       {}
 func (es *ExpressionStatement) TokenLiteral() string { return es.Token.Literal }
@@ -98,7 +98,7 @@ func (ls *LetStatement) String() string {
 	return out.String()
 }
 
-func (rs *RetrunStatement) String() string {
+func (rs *ReturnStatement) String() string {
 	var out bytes.Buffer
 
 	out.WriteString(rs.TokenLiteral() + " ")
