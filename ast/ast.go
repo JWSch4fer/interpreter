@@ -128,7 +128,7 @@ func (il *IntegerLiteral) expressionNode()      {}
 func (il *IntegerLiteral) TokenLiteral() string { return il.Token.Literal }
 func (il *IntegerLiteral) String() string       { return il.Token.Literal }
 
-// define functions for a prefix expression
+// define functions for a prefix ast node
 type PrefixExpression struct {
 	Token    token.Token
 	Operator string
@@ -148,7 +148,7 @@ func (pe *PrefixExpression) String() string {
 	return out.String()
 }
 
-// define functions for a infix expression
+// define functions for a infix ast node
 type InfixExpression struct {
 	Token    token.Token
 	Left     Expression
@@ -172,3 +172,13 @@ func (oe *InfixExpression) String() string {
 	return out.String()
 
 }
+
+// define ast boolean node
+type Boolean struct {
+	Token token.Token
+	Value bool
+}
+
+func (b *Boolean) expressionNode()      {}
+func (b *Boolean) TokenLiteral() string { return b.Token.Literal }
+func (b *Boolean) String() string       { return b.Token.Literal }
