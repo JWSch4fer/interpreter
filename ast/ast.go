@@ -26,7 +26,7 @@ type Expression interface {
 	expressionNode()
 }
 
-// this is to let us modify statements we defined with one liners
+// build ast statements we defined until a ; is found
 // useful for interactive mode
 type ExpressionStatement struct {
 	Token      token.Token
@@ -74,6 +74,7 @@ func (p *Program) String() string {
 
 	for _, s := range p.Statements {
 		out.WriteString(s.String())
+
 	}
 	return out.String()
 }
@@ -162,7 +163,9 @@ func (oe *InfixExpression) String() string {
 
 	out.WriteString("(")
 	out.WriteString(oe.Left.String())
+	out.WriteString(" ")
 	out.WriteString(oe.Operator)
+	out.WriteString(" ")
 	out.WriteString(oe.Right.String())
 	out.WriteString(")")
 
