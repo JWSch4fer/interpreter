@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/JWSch4fer/interpreter/evaluate"
 	"github.com/JWSch4fer/interpreter/lexer"
 	"github.com/JWSch4fer/interpreter/parser"
 )
@@ -34,8 +35,11 @@ func Start(in io.Reader, out io.Writer) {
 			continue
 		}
 
-		io.WriteString(out, program.String())
-		io.WriteString(out, "\n")
+		evaluated := evaluate.Eval(program)
+		if evaluated != nil {
+			io.WriteString(out, evaluated.Inspect())
+			io.WriteString(out, "\n")
+		}
 	}
 }
 
