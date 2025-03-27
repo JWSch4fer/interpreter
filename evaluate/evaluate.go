@@ -97,9 +97,19 @@ func evalMinusPrefixOperatorExpression(right object.Object) object.Object {
 // specify behaviour of minus operator
 func evalInfixExpression(operator string, left, right object.Object) object.Object {
 	switch {
+	//check for integers first!!!
 	case
 		left.Type() == object.INTEGER_OBJ && right.Type() == object.INTEGER_OBJ:
 		return evalIntegerInfixExpression(operator, left, right)
+
+	/*
+		evaluating pointers here but we only ever have one address for TRUE
+		and one adress for FALSE no matter what else happens in the language
+	*/
+	case operator == "==":
+		return nativeBoolToBooleanObject(left == right)
+	case operator == "!=":
+		return nativeBoolToBooleanObject(left != right)
 	default:
 		return NULL
 
