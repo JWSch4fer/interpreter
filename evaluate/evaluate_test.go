@@ -265,3 +265,76 @@ func TestLetStatements(t *testing.T) {
 		testIntegerObject(t, testEval(tt.input), tt.expected)
 	}
 }
+
+func TestFunctionObject(t *testing.T) {
+	input := "df(x) { x + 2; };"
+
+	evaluated := testEval(input)
+	df, ok := evaluated.(*object.Function)
+	if !ok {
+		t.Fatalf("object is not Function. got=%T (%+v)", evaluated, evaluated)
+	}
+
+	if len(df.Parameters) != 1 {
+		t.Fatalf("function has wrong parameters. Parameters=%+v",
+			df.Parameters)
+	}
+
+	if df.Parameters[0].String() != "x" {
+		t.Fatalf("parameter is not 'x'. got=%q", df.Parameters[0])
+	}
+
+	expectedBody := "(x + 2)"
+
+	if df.Body.String() != expectedBody {
+		t.Fatalf("body is not %q. got=%q", expectedBody, df.Body.String())
+	}
+}
+
+func TestFunctionApplication(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected int64
+	}{
+		{"let identity = df(x) { x; }; identity(5);", 5},
+		{"let identity = df(x) { return x; }; identity(5);", 5},
+		{"let double = df(x) { x * 2; }; double(5);", 10},
+		{"let add = df(x, y) { x + y; }; add(5, 5);", 10},
+		{"let add = df(x, y) { x + y; }; add(5 + 5, add(5, 5));", 20},
+		{"df(x) { x; }(5)", 5},
+	}
+
+	for _, tt := range tests {
+		testIntegerObject(t, testEval(tt.input), tt.expected)
+	}
+}
+
+// we support closures!!!
+func TestClosures(t *testing.T) {
+	input := `
+let newAdder = df(x) {
+df(y) { x + y };
+};
+let addTwo = newAdder(2);
+addTwo(2);`
+	testIntegerObject(t, testEval(input), 4)
+}
+
+// we support recursion!!!
+// NOTE: we are not creating 100s of foobars as we iterate
+// this language relies on GOs GC which will eliminate any
+// unreachable allocated memory
+func TestRecursion(t *testing.T) {
+	input := `
+let counter = df(x) {
+if (x > 100) {
+return true;
+} else {
+let foobar = 9999;
+counter(x + 1);
+}
+};
+counter(0);
+	`
+	testBooleanObject(t, testEval(input), true)
+}

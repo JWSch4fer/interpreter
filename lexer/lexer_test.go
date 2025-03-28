@@ -43,7 +43,7 @@ func TestNextToken2(t *testing.T) {
 	input := `let five = 5;
 	let ten = 10;
 
-	let add = fn(x, y) {
+	let add = df(x, y) {
 		x + y;
 	};
 
@@ -67,7 +67,7 @@ func TestNextToken2(t *testing.T) {
 		{token.LET, "let"},
 		{token.IDENT, "add"},
 		{token.ASSIGN, "="},
-		{token.FUNCTION, "fn"},
+		{token.FUNCTION, "df"},
 		{token.LPAREN, "("},
 		{token.IDENT, "x"},
 		{token.COMMA, ","},
@@ -112,7 +112,7 @@ func TestNextToken3(t *testing.T) {
 	input := `let five = 5;
 let ten = 10;
 
-let add = fn(x, y) {
+let add = df(x, y) {
   x + y;
 };
 
@@ -147,7 +147,7 @@ if (5 < 10) {
 		{token.LET, "let"},
 		{token.IDENT, "add"},
 		{token.ASSIGN, "="},
-		{token.FUNCTION, "fn"},
+		{token.FUNCTION, "df"},
 		{token.LPAREN, "("},
 		{token.IDENT, "x"},
 		{token.COMMA, ","},
