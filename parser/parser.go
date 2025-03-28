@@ -65,6 +65,7 @@ func New(l *lexer.Lexer) *Parser {
 
 	p.registerPrefix(token.FALSE, p.parseBoolean)
 	p.registerPrefix(token.TRUE, p.parseBoolean)
+	p.registerPrefix(token.EXIT, p.parseExit)
 
 	p.registerPrefix(token.LPAREN, p.parseGroupedExpression)
 	p.registerPrefix(token.IF, p.parseIfExpression)
@@ -232,6 +233,10 @@ func (p *Parser) parseGroupedExpression() ast.Expression {
 	}
 
 	return exp
+}
+
+func (p *Parser) parseExit() ast.Expression {
+	return &ast.ExitExpression{Token: p.currToken, Value: 0}
 }
 
 func (p *Parser) parseBoolean() ast.Expression {

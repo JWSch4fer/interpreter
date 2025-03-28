@@ -1,6 +1,8 @@
 package evaluate
 
 import (
+	"os"
+
 	"github.com/JWSch4fer/interpreter/ast"
 	"github.com/JWSch4fer/interpreter/object"
 )
@@ -16,6 +18,11 @@ var (
 func Eval(node ast.Node) object.Object {
 	switch node := node.(type) {
 
+	//special case to exit interactive mode
+	//if the user passes exit we don't need to check anything else
+	case *ast.ExitExpression:
+		os.Exit(0)
+
 	//Statements
 	case *ast.Program:
 		return evalStatements(node.Statements)
@@ -30,11 +37,12 @@ func Eval(node ast.Node) object.Object {
 		right := Eval(node.Right)
 		return evalInfixExpression(node.Operator, left, right)
 
-	//Expression typees
+	//Expression types
 	case *ast.IntegerLiteral:
 		return &object.Integer{Value: node.Value}
 	case *ast.Boolean:
 		return nativeBoolToBooleanObject(node.Value)
+
 	}
 
 	return nil

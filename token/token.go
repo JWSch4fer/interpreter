@@ -11,6 +11,7 @@ type Token struct {
 const (
 	ILLEGAL = "ILLEGAL" //something the interpreter can't interpret
 	EOF     = "EOF"
+	EXIT    = "EXIT"
 
 	//identifier and literals
 	IDENT = "IDENT" // add, x, y, foo ...
@@ -56,6 +57,7 @@ var keywords = map[string]TokenType{
 	"if":     IF,
 	"else":   ELSE,
 	"return": RETURN,
+	"exit":   EXIT,
 }
 
 // define language specified keywords versus user defined variables

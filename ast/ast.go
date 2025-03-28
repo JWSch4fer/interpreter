@@ -174,6 +174,16 @@ func (oe *InfixExpression) String() string {
 
 }
 
+// define ast EXIT node
+type ExitExpression struct {
+	Token token.Token
+	Value int
+}
+
+func (e *ExitExpression) expressionNode()      {}
+func (e *ExitExpression) TokenLiteral() string { return e.Token.Literal }
+func (e *ExitExpression) String() string       { return e.Token.Literal }
+
 // define ast boolean node
 type Boolean struct {
 	Token token.Token
