@@ -38,7 +38,7 @@ starting interpreter...
 ```
 
 ## Running Tests
-A comprehensive test suite is provided to validate the lexer, parser, evaluator, and AST implementation. To run all tests, use:
+A comprehensive test suite is provided to validate the lexer, parser, evaluator, and AST implementation.
 
 ## Future Improvements
 - Unicode & UTF-8 Support: Currently, the lexer processes ASCII input. Consider switching from byte to rune for full UTF-8 support.
