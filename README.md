@@ -25,9 +25,16 @@ You will see a prompt (>>) where you can enter code. For example:
 ```
 go run main/main.go
 
+starting interpreter...
+>>let counter = df(x) { if (x > 100) {return x} else {counter(x + 1)}}
+>>counter(0)
+101
+
 >> let add = df(x, y) { x + y; };
 >> add(5, 3);
 8
+
+>>exit
 ```
 
 ## Running Tests
