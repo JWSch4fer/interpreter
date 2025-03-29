@@ -12,6 +12,7 @@ const (
 	ILLEGAL = "ILLEGAL" //something the interpreter can't interpret
 	EOF     = "EOF"
 	EXIT    = "EXIT"
+	COMMENT = "COMMENT"
 
 	//identifier and literals
 	IDENT = "IDENT" // add, x, y, foo ...

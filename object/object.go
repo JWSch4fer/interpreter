@@ -15,6 +15,7 @@ const (
 	RETURN_VALUE_OBJ = "RETURN_VALUE"
 	ERROR_OBJ        = "ERROR"
 	FUNCTION_OBJ     = "FUNCTION"
+	COMMENT_OBJ      = "COMMENT"
 )
 
 type ObjectType string
@@ -59,6 +60,13 @@ type Error struct {
 
 func (e *Error) Type() ObjectType { return ERROR_OBJ }
 func (e *Error) Inspect() string  { return "Error: " + e.Message }
+
+type Comment struct {
+	Message string
+}
+
+func (c *Comment) Type() ObjectType { return COMMENT_OBJ }
+func (c *Comment) Inspect() string  { return "Comment: " + c.Message }
 
 // functions get their own Environment
 type Function struct {

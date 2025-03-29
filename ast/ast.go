@@ -129,6 +129,15 @@ func (il *IntegerLiteral) expressionNode()      {}
 func (il *IntegerLiteral) TokenLiteral() string { return il.Token.Literal }
 func (il *IntegerLiteral) String() string       { return il.Token.Literal }
 
+type CommentLiteral struct {
+	Token token.Token
+	Value string
+}
+
+func (cl *CommentLiteral) expressionNode()      {}
+func (cl *CommentLiteral) TokenLiteral() string { return cl.Token.Literal }
+func (cl *CommentLiteral) String() string       { return cl.Token.Literal }
+
 // define functions for a prefix ast node
 type PrefixExpression struct {
 	Token    token.Token

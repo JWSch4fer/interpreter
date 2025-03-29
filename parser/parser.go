@@ -65,6 +65,7 @@ func New(l *lexer.Lexer) *Parser {
 
 	p.registerPrefix(token.FALSE, p.parseBoolean)
 	p.registerPrefix(token.TRUE, p.parseBoolean)
+	p.registerPrefix(token.COMMENT, p.parseComment)
 	p.registerPrefix(token.EXIT, p.parseExit)
 
 	p.registerPrefix(token.LPAREN, p.parseGroupedExpression)
@@ -438,6 +439,15 @@ func (p *Parser) parseIntegerLiteral() ast.Expression {
 	lit.Value = value
 
 	return lit
+}
+
+func (p *Parser) parseComment() ast.Expression {
+	if p.currToken.Literal == "Unclosed comment!?!" {
+		p.errors = append(p.errors, "Unclosed comment!?!\n")
+		return nil
+	}
+	comm := &ast.CommentLiteral{Token: p.currToken, Value: p.currToken.Literal}
+	return comm
 }
 
 func (p *Parser) noPrefixParseFnError(t token.TokenType) {

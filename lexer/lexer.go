@@ -1,6 +1,8 @@
 package lexer
 
-import "github.com/JWSch4fer/interpreter/token"
+import (
+	"github.com/JWSch4fer/interpreter/token"
+)
 
 type Lexer struct {
 	input        string
@@ -62,7 +64,11 @@ func (l *Lexer) NextToken() token.Token {
 			tok = newToken(token.BANG, l.ch)
 		}
 	case '/':
-		tok = newToken(token.SLASH, l.ch)
+		if l.peekChar() == '/' {
+			return l.readComment() // define a comment for this language
+		} else {
+			tok = newToken(token.SLASH, l.ch)
+		}
 	case '*':
 		tok = newToken(token.ASTERISK, l.ch)
 	case '<':
@@ -124,6 +130,31 @@ func newToken(tokenType token.TokenType, ch byte) token.Token {
 // we don't interpret whitespace
 func (l *Lexer) skipWhiteSpace() {
 	for l.ch == ' ' || l.ch == '\t' || l.ch == '\n' || l.ch == '\r' {
+		l.readChar()
+	}
+}
+
+func (l *Lexer) readComment() token.Token {
+	// deal with the initial //
+	l.readChar()
+	l.readChar()
+
+	start := l.position // the start of comment text
+	for {
+		// check if the current and next char for the closing delimiter
+		if l.ch == '/' && l.peekChar() == '/' {
+			commentText := l.input[start:l.position]
+			//move forward twice
+			l.readChar()
+			l.readChar()
+			// return comment token for ast parsing
+			// we are storing comments as an ast node
+			// but this allows us to use consistent error parsing
+			return token.Token{Type: token.COMMENT, Literal: commentText}
+		}
+		if l.ch == 0 { // we return 0 if we reach token.EOF
+			return token.Token{Type: token.COMMENT, Literal: "Unclosed comment!?!"}
+		}
 		l.readChar()
 	}
 }
