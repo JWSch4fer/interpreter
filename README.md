@@ -26,13 +26,33 @@ You will see a prompt (>>) where you can enter code. For example:
 go run main/main.go
 
 starting interpreter...
+// Recursion //
 >>let counter = df(x) { if (x > 100) {return x} else {counter(x + 1)}}
 >>counter(0)
 101
 
+// define functions //
 >> let add = df(x, y) { x + y; };
 >> add(5, 3);
 8
+
+// support floats //
+let x = 3;
+let y = 5;
+x / y;
+0
+
+let y = 5.0;
+x / y;
+0.600000
+
+// Closures are also supported //
+let newAdder = df(x) {
+df(y) { x + y };
+};
+let addTwo = newAdder(2);
+addTwo(2.5);
+4.500000
 
 >>exit
 ```
@@ -43,7 +63,7 @@ A comprehensive test suite is provided to validate the lexer, parser, evaluator,
 ## Future Improvements
 - Unicode & UTF-8 Support: Currently, the lexer processes ASCII input. Consider switching from byte to rune for full UTF-8 support.
 
-- Extended Data Types: Add support for floats, strings, and additional data types.
+- Extended Data Types: Add support for strings and additional data types.
 
 - Enhanced Error Messages: Improve debugging capabilities with more detailed error reporting.
 
