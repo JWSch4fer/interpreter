@@ -8,6 +8,34 @@ import (
 	"github.com/JWSch4fer/interpreter/parser"
 )
 
+func TestEvalFloatExpressoin(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected float32
+	}{
+		{"5.0", float32(5.0)},
+		{"10.0", float32(10.0)},
+		{"-5.0", float32(-5.0)},
+		{"-10.0", float32(-10.0)},
+		{"5.0 + 5.0 + 5.0 + 5.0 - 10.0", float32(10.0)},
+		{"2.0 * 2.0 * 2.0 * 2.0 * 2.0", float32(32.0)},
+		{"-50.0 + 100.0 + -50.0", float32(0)},
+		{"5.0 * 2.0 + 10.0", float32(20)},
+		{"5.0 + 2.0 * 10.0", float32(25)},
+		{"20.0 + 2.0 * -10.0", float32(0)},
+		{"50.0 / 2.0 * 2.0 + 10.0", float32(60)},
+		{"2.0 * (5.0 + 10.0)", float32(30)},
+		{"3.0 * 3.0 * 3.0 + 10.0", float32(37)},
+		{"3.0 * (3.0 * 3.0) + 10.0", float32(37)},
+		{"(5.0 + 10.0 * 2.0 + 15.0 / 3.0) * 2.0 + -10.0", float32(50)},
+	}
+
+	for _, tt := range tests {
+		evaluated := testEval(tt.input)
+		testFloatObject(t, evaluated, tt.expected)
+	}
+}
+
 func TestEvalIntegerExpressoin(t *testing.T) {
 	tests := []struct {
 		input    string
@@ -43,6 +71,19 @@ func testEval(input string) object.Object {
 	env := object.NewEnvironment()
 
 	return Eval(program, env)
+}
+
+func testFloatObject(t *testing.T, obj object.Object, expected float32) bool {
+	result, ok := obj.(*object.Float)
+	if !ok {
+		t.Errorf("object is not float: got %T (%+v)", obj, obj)
+		return false
+	}
+	if result.Value != expected {
+		t.Errorf("object has wrong value: got %f, want %f", result.Value, expected)
+		return false
+	}
+	return true
 }
 
 func testIntegerObject(t *testing.T, obj object.Object, expected int64) bool {

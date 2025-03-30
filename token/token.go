@@ -16,7 +16,8 @@ const (
 
 	//identifier and literals
 	IDENT = "IDENT" // add, x, y, foo ...
-	INT   = "INT"   //init
+	INT   = "INT"   // 1234567890
+	FLOAT = "FLOAT" // 3.14159
 
 	//OPERATORS
 	ASSIGN   = "="

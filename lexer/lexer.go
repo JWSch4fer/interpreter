@@ -1,6 +1,8 @@
 package lexer
 
 import (
+	"strings"
+
 	"github.com/JWSch4fer/interpreter/token"
 )
 
@@ -98,8 +100,13 @@ func (l *Lexer) NextToken() token.Token {
 			tok.Type = token.LookupIdent(tok.Literal)
 			return tok
 		} else if isDigit(l.ch) {
-			tok.Type = token.INT
-			tok.Literal = l.readNumber()
+			literal := l.readNumber()
+			if strings.Contains(literal, ".") {
+				tok.Type = token.FLOAT
+			} else {
+				tok.Type = token.INT
+			}
+			tok.Literal = literal
 			return tok
 		} else {
 			tok = newToken(token.ILLEGAL, l.ch)
@@ -160,11 +167,15 @@ func (l *Lexer) readComment() token.Token {
 }
 
 // helper function to read numbers
-// we are only allowing integers for now input with Latin digits
-// might add floats, binary, hex later
+// we are only allowing integers and floats for now input with Latin digits
+// might add binary, hex later
 func (l *Lexer) readNumber() string {
 	position := l.position
-	for isDigit(l.ch) {
+	hasDot := false
+	for isDigit(l.ch) || (l.ch == '.' && !hasDot) {
+		if l.ch == '.' {
+			hasDot = true
+		}
 		l.readChar()
 	}
 	return l.input[position:l.position]

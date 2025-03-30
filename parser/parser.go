@@ -59,7 +59,8 @@ func New(l *lexer.Lexer) *Parser {
 	//associate prefix/infix with tokens
 	p.prefixParseFns = make(map[token.TokenType]prefixParseFn)
 	p.registerPrefix(token.IDENT, p.parseIdentifier)
-	p.registerPrefix(token.INT, p.parseIntegerLiteral)
+	p.registerPrefix(token.INT, p.parseNumberLiteral)
+	p.registerPrefix(token.FLOAT, p.parseNumberLiteral)
 	p.registerPrefix(token.MINUS, p.parsePrefixExpression)
 	p.registerPrefix(token.BANG, p.parsePrefixExpression)
 
@@ -426,10 +427,23 @@ func (p *Parser) parseExpression(precedence int) ast.Expression {
 	return leftExp
 }
 
-func (p *Parser) parseIntegerLiteral() ast.Expression {
+func (p *Parser) parseNumberLiteral() ast.Expression {
 	// defer untrace(trace("parseIntegerLiteral"))
+
 	lit := &ast.IntegerLiteral{Token: p.currToken}
 
+	if p.currToken.Type == token.FLOAT {
+		floatLit := &ast.FloatLiteral{Token: p.currToken}
+		value, err := strconv.ParseFloat(p.currToken.Literal, 32)
+		if err != nil {
+			p.errors = append(p.errors, fmt.Sprintf("could not parse %q as float", p.currToken))
+			return nil
+		}
+		floatLit.Value = float32(value)
+		return floatLit
+	}
+
+	//default to integers
 	value, err := strconv.ParseInt(p.currToken.Literal, 0, 64)
 	if err != nil {
 		msg := fmt.Sprintf("could not parse %q as integer", p.currToken.Literal)
@@ -437,7 +451,6 @@ func (p *Parser) parseIntegerLiteral() ast.Expression {
 		return nil
 	}
 	lit.Value = value
-
 	return lit
 }
 
