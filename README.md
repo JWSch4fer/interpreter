@@ -37,21 +37,19 @@ starting interpreter...
 8
 
 // support floats //
-let x = 3;
-let y = 5;
-x / y;
+>> let x = 3;
+>> let y = 5;
+>> x / y;
 0
 
-let y = 5.0;
-x / y;
+>> let y = 5.0;
+>> x / y;
 0.600000
 
 // Closures are also supported //
-let newAdder = df(x) {
-df(y) { x + y };
-};
-let addTwo = newAdder(2);
-addTwo(2.5);
+>> let newAdder = df(x) { df(y) { x + y }; };
+>> let addTwo = newAdder(2);
+>> addTwo(2.5);
 4.500000
 
 >>exit
