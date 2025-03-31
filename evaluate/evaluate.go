@@ -282,6 +282,8 @@ func evalInfixExpression(operator string, left, right object.Object) object.Obje
 			left.Type() == object.FLOAT_OBJ && right.Type() == object.INTEGER_OBJ ||
 			left.Type() == object.INTEGER_OBJ && right.Type() == object.FLOAT_OBJ:
 		return evalFloatInfixExpression(operator, left, right)
+	case left.Type() == object.STRING_OBJ && right.Type() == object.STRING_OBJ:
+		return evalStringInfixExpression(operator, left, right)
 
 	/*
 		evaluating pointers here but we only ever have one address for TRUE
@@ -297,6 +299,21 @@ func evalInfixExpression(operator string, left, right object.Object) object.Obje
 		return newError("unknown operator: %s %s %s", left.Type(), operator, right.Type())
 
 	}
+}
+
+func evalStringInfixExpression(
+	operator string,
+	left, right object.Object,
+) object.Object {
+	if operator != "+" {
+		return newError("unknown operator: %s %s %s",
+			left.Type(), operator, right.Type())
+	}
+
+	leftVal := left.(*object.String).Value
+	rightVal := right.(*object.String).Value
+	return &object.String{Value: leftVal + rightVal}
+
 }
 
 func getFloatValue(obj object.Object) (float32, string) {
