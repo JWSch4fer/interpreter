@@ -15,9 +15,10 @@ const (
 	COMMENT = "COMMENT"
 
 	//identifier and literals
-	IDENT = "IDENT" // add, x, y, foo ...
-	INT   = "INT"   // 1234567890
-	FLOAT = "FLOAT" // 3.14159
+	IDENT  = "IDENT"  // add, x, y, foo ...
+	INT    = "INT"    // 1234567890
+	FLOAT  = "FLOAT"  // 3.14159
+	STRING = "STRING" // "blah blah"
 
 	//OPERATORS
 	ASSIGN   = "="

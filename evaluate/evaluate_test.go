@@ -8,6 +8,20 @@ import (
 	"github.com/JWSch4fer/interpreter/parser"
 )
 
+func TestStringLiteral(t *testing.T) {
+	input := `"Hello world!"`
+
+	evaluated := testEval(input)
+	str, ok := evaluated.(*object.String)
+	if !ok {
+		t.Fatalf("object is not String: got %T (%+v)", evaluated, evaluated)
+	}
+
+	if str.Value != "Hello world!" {
+		t.Fatalf("String has wrong value: got %q ", str.Value)
+	}
+}
+
 func TestEvalFloatExpressoin(t *testing.T) {
 	tests := []struct {
 		input    string

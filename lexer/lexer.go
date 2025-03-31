@@ -42,6 +42,9 @@ func (l *Lexer) NextToken() token.Token {
 	l.skipWhiteSpace()
 
 	switch l.ch {
+	case '"':
+		tok.Type = token.STRING
+		tok.Literal = l.readString()
 	case '=':
 		// two char token case for ==
 		if l.peekChar() == '=' {
@@ -139,6 +142,18 @@ func (l *Lexer) skipWhiteSpace() {
 	for l.ch == ' ' || l.ch == '\t' || l.ch == '\n' || l.ch == '\r' {
 		l.readChar()
 	}
+}
+
+// capture all characters between "
+func (l *Lexer) readString() string {
+	position := l.position + 1
+	for {
+		l.readChar()
+		if l.ch == '"' || l.ch == 0 {
+			break
+		}
+	}
+	return l.input[position:l.position]
 }
 
 func (l *Lexer) readComment() token.Token {

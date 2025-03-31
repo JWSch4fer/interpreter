@@ -11,6 +11,7 @@ import (
 const (
 	INTEGER_OBJ      = "INTEGER"
 	FLOAT_OBJ        = "FLOAT"
+	STRING_OBJ       = "STRING"
 	BOOLEAN_OBJ      = "BOOLEAN"
 	NULL_OBJ         = "NULL"
 	RETURN_VALUE_OBJ = "RETURN_VALUE"
@@ -25,6 +26,14 @@ type Object interface {
 	Type() ObjectType
 	Inspect() string
 }
+
+// build object representation of strings
+type String struct {
+	Value string
+}
+
+func (s *String) Inspect() string  { return s.Value }
+func (s *String) Type() ObjectType { return STRING_OBJ }
 
 // build object representation of integers
 type Integer struct {
