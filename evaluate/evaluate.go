@@ -135,14 +135,18 @@ func evalExpressions(
 }
 
 func applyFunction(df object.Object, args []object.Object) object.Object {
-	function, ok := df.(*object.Function)
-	if !ok {
+
+	switch df := df.(type) {
+	case *object.Function:
+		extendedEnv := extendFunctionEnv(df, args)
+		evaluated := Eval(df.Body, extendedEnv)
+		return unwrapReturnValue(evaluated)
+	case *object.Builtin:
+		return df.Fn(args...)
+	default:
 		return newError("not a function : %s", df.Type())
 	}
 
-	extendedEnv := extendFunctionEnv(function, args)
-	evaluated := Eval(function.Body, extendedEnv)
-	return unwrapReturnValue(evaluated)
 }
 
 func extendFunctionEnv(
@@ -166,11 +170,13 @@ func unwrapReturnValue(obj object.Object) object.Object {
 }
 
 func evalIdentifier(node *ast.Identifier, env *object.Environment) object.Object {
-	val, ok := env.Get(node.Value)
-	if !ok {
-		return newError("identifier not found: %s", node.Value)
+	if val, ok := env.Get(node.Value); ok {
+		return val
 	}
-	return val
+	if builtin, ok := builtins[node.Value]; ok {
+		return builtin
+	}
+	return newError("identifier not found: %s", node.Value)
 }
 
 // only check the type so that we can handle nesting

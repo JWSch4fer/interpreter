@@ -52,6 +52,19 @@ starting interpreter...
 >> addTwo(2.5);
 4.500000
 
+//strings with concatenation //
+>>let myString = "hello ";
+>>myString + "world"
+hello world
+
+>>myString + "3.0"
+hello 3.0
+>>len(myString + "3.0")
+9
+
+>>myString + 3.0
+Error: type mismatch: STRING + FLOAT
+
 >>exit
 ```
 
