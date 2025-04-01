@@ -125,6 +125,19 @@ func testIntegerObject(t *testing.T, obj object.Object, expected int64) bool {
 	return true
 }
 
+func testStringObject(t *testing.T, obj object.Object, expected string) bool {
+	result, ok := obj.(*object.String)
+	if !ok {
+		t.Errorf("object is not String: got %T (%+v)", obj, obj)
+		return false
+	}
+	if result.Value != expected {
+		t.Errorf("object has wrong value: got %s, want %s", result.Value, expected)
+		return false
+	}
+	return true
+}
+
 func TestEvalBooleanExpression(t *testing.T) {
 	tests := []struct {
 		input    string
@@ -501,12 +514,29 @@ func TestArrayIndexExpressions(t *testing.T) {
 			"[1, 2, 3][-1]",
 			nil,
 		},
+
+		{
+			"let x = [1,2,3,4]; let x = map(df(a){a+1}, x); x[3]",
+			5,
+		},
+		{
+			"let x = [1,2,3,4.5]; let x = map(df(a){a/0.5}, x); x[3]",
+			float32(9),
+		},
+		{
+			`let x = ["a","b","c","d"]; let x = map(df(a){a+"!"}, x); x[2]`,
+			"c!",
+		},
 	}
 	for _, tt := range tests {
 		evaluated := testEval(tt.input)
-		integer, ok := tt.expected.(int)
-		if ok {
+		// integer, ok := tt.expected.(int)
+		if integer, ok := tt.expected.(int); ok {
 			testIntegerObject(t, evaluated, int64(integer))
+		} else if fl, ok := tt.expected.(float32); ok {
+			testFloatObject(t, evaluated, float32(fl))
+		} else if message, ok := tt.expected.(string); ok {
+			testStringObject(t, evaluated, message)
 		} else {
 			testNullObject(t, evaluated)
 		}
