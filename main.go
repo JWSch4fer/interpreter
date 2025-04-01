@@ -50,6 +50,8 @@ func main() {
 				was a comment we print the comment, if it was a boolean we print
 				true/false, etc. need to implement a print function
 		*/
+
+		// fmt.Println(result.Type())
 		fmt.Println(result.Inspect())
 	} else {
 		// interactive mode
