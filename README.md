@@ -65,6 +65,12 @@ hello 3.0
 >>myString + 3.0
 Error: type mismatch: STRING + FLOAT
 
+// arrays with builtin functions //
+>>let x = [1,2,3,4];
+let x = map(df(a){a / 0.1}, x);
+>>x
+[10.000000, 20.000000, 30.000000, 40.000000]
+
 >>exit
 ```
 
