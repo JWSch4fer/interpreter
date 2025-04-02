@@ -71,6 +71,11 @@ let x = map(df(a){a / 0.1}, x);
 >>x
 [10.000000, 20.000000, 30.000000, 40.000000]
 
+// Hash is also available //
+>>let p =  [{"first": 10000, "second": 777}, {"name": "Bob", "age": 28}];
+>>p[1]["name"]
+Bob
+
 >>exit
 ```
 
