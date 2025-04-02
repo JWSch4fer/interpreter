@@ -2,6 +2,9 @@ package evaluate
 
 import (
 	"fmt"
+	"os"
+	"strconv"
+	"strings"
 
 	"github.com/JWSch4fer/interpreter/object"
 )
@@ -168,7 +171,78 @@ func init() {
 				return &object.Array{Elements: results}
 			},
 		},
+		"read_file": {
+			Fn: func(args ...object.Object) object.Object {
+				if len(args) < 2 || len(args) > 3 {
+					return newError("wrong number of arguments: got %d, expected 2 or 3", len(args))
+				}
+
+				//First argument is a file path
+				filePathObj, ok := args[0].(*object.String)
+				if !ok {
+					return newError("first argument must be a string (file path) got %s", args[0])
+				}
+				//second argumnet is a delimiter
+				deliObj, ok := args[1].(*object.String)
+				if !ok {
+					return newError("second argument must be a String (delimiter), got %s", args[1])
+				}
+
+				//third argument is optional data type
+				dataType := "STRING"
+				if len(args) == 3 {
+					dtObj, ok := args[2].(*object.String)
+					if !ok {
+						return newError("data type can be STRING, INT, or FLOAT")
+					}
+					dataType = dtObj.Value
+				}
+
+				content, err := os.ReadFile(filePathObj.Value)
+				if err != nil {
+					return newError("error reading file: %s", err.Error())
+				}
+
+				lines := strings.Split(string(content), "\n")
+				var resultsRows []object.Object
+
+				for _, line := range lines {
+					// skip empty
+					if strings.TrimSpace(line) == "" {
+						continue
+					}
+
+					fields := strings.Split(line, deliObj.Value)
+					var rowFields []object.Object
+					for _, field := range fields {
+						field = strings.TrimSpace(field)
+						var converted object.Object
+						switch dataType {
+						case "INT":
+							i, err := strconv.ParseInt(field, 10, 64)
+							if err != nil {
+								return newError("cannot convert %q to int", field)
+							}
+							converted = &object.Integer{Value: i}
+						case "FLOAT":
+							f, err := strconv.ParseFloat(field, 32)
+							if err != nil {
+								return newError("cannot convert %q to float", field)
+							}
+							converted = &object.Float{Value: float32(f)}
+
+						default:
+							converted = &object.String{Value: field}
+						}
+						rowFields = append(rowFields, converted)
+					}
+					resultsRows = append(resultsRows, &object.Array{Elements: rowFields})
+				}
+				return &object.Array{Elements: resultsRows}
+			},
+		},
 	}
+
 }
 
 // GetBuiltinWithGetter returns the builtinWithGetter map.
