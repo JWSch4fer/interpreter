@@ -3,6 +3,8 @@ package object
 import (
 	"bytes"
 	"fmt"
+	"hash/fnv"
+	"math"
 	"strings"
 
 	"github.com/JWSch4fer/interpreter/ast"
@@ -20,6 +22,7 @@ const (
 	COMMENT_OBJ      = "COMMENT"
 	BUILTIN_OBJ      = "BUILTIN"
 	ARRAY_OBJ        = "ARRAY"
+	HASH_OBJ         = "HASH"
 )
 
 type ObjectType string
@@ -30,8 +33,11 @@ type Object interface {
 }
 
 // build object representation of strings
+// caching the string hash values becuase they are slow
+// if they are recomputed every time they are called
 type String struct {
-	Value string
+	Value         string
+	cachedHashKey *HashKey // cache string hash
 }
 
 func (s *String) Inspect() string  { return s.Value }
@@ -144,3 +150,72 @@ type Builtin struct {
 
 func (b *Builtin) Type() ObjectType { return BUILTIN_OBJ }
 func (b *Builtin) Inspect() string  { return "Builtin Function" }
+
+// define hash key for our hash data type
+type HashKey struct {
+	Type  ObjectType
+	Value uint64
+}
+
+func (b *Boolean) HashKey() HashKey {
+	var value uint64
+
+	if b.Value {
+		value = 1
+	} else {
+		value = 0
+	}
+
+	return HashKey{Type: b.Type(), Value: value}
+}
+
+func (i *Integer) HashKey() HashKey {
+	return HashKey{Type: i.Type(), Value: uint64(i.Value)}
+}
+
+func (f *Float) HashKey() HashKey {
+	return HashKey{Type: f.Type(), Value: uint64(math.Float32bits(f.Value))}
+}
+
+func (s *String) HashKey() HashKey {
+	// return cached hash key
+	if s.cachedHashKey != nil {
+		return *s.cachedHashKey
+	}
+
+	h := fnv.New64()
+	h.Write([]byte(s.Value))
+	key := HashKey{Type: s.Type(), Value: h.Sum64()}
+	s.cachedHashKey = &key
+
+	return key
+}
+
+type HashPair struct {
+	Key   Object
+	Value Object
+}
+
+type Hash struct {
+	Pairs map[HashKey]HashPair
+}
+
+func (h *Hash) Type() ObjectType { return HASH_OBJ }
+func (h *Hash) Inspect() string {
+	var out bytes.Buffer
+
+	pairs := []string{}
+	for _, pair := range h.Pairs {
+		pairs = append(pairs, fmt.Sprintf("%s: %s", pair.Key.Inspect(), pair.Value.Inspect()))
+	}
+
+	out.WriteString("{")
+	out.WriteString(strings.Join(pairs, ", "))
+	out.WriteString("}")
+
+	return out.String()
+}
+
+type Hashable interface {
+	HashKey() HashKey
+}
