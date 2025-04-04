@@ -2,6 +2,9 @@
 
 This repository implements a simple interpreter for a custom programming language written in Go. It includes a lexer, parser, evaluator, and a REPL (Read-Eval-Print Loop) for interactive usage. The language supports basic arithmetic, boolean logic, conditionals, functions (with closures and recursion), and more.
 
+## Demo
+<img alt="Demo" src="https://github.com/JWSch4fer/interpreter/blob/main/examples/demo.gif" width="600" />
+
 ## Features
 - Lexer: Tokenizes input strings and supports multi-character tokens (such as == and !=).
 
@@ -19,10 +22,13 @@ This repository implements a simple interpreter for a custom programming languag
 Ensure you have Go installed (version 1.24 or above).
 
 ## Usage
+An example is available in example/01.sh
+
+
 To run the interpreter in interactive mode:
 You will see a prompt (>>) where you can enter code. For example:
 
-```
+```sh
 go run main/main.go
 
 starting interpreter...
@@ -90,7 +96,7 @@ A comprehensive test suite is provided to validate the lexer, parser, evaluator,
 - Enhanced Error Messages: Improve debugging capabilities with more detailed error reporting.
 
 ## Note:
-This project follows the excellent guide written by Thorsten Ball, Writing an Interpreter in Go. Highly recommend this resource to anyone interested in a deeper understanding of how languages are built.
+This project builds on the excellent guide written by Thorsten Ball, Writing an Interpreter in Go. Highly recommend this resource to anyone interested in a deeper understanding of how languages are built.
 
 ## License
 This project is licensed under the MIT License.
