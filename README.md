@@ -3,7 +3,7 @@
 This repository implements a simple interpreter for a custom programming language written in Go. It includes a lexer, parser, evaluator, and a REPL for interactive usage or it can read in a file. The language supports arithmetic, boolean logic, conditionals, functions (with closures and recursion), and more.
 
 ## Demo
-<img alt="Demo" src="https://github.com/JWSch4fer/interpreter/blob/main/examples/demo.gif" width="600" />
+<img alt="Demo" src="https://github.com/JWSch4fer/interpreter/blob/main/examples/demo.gif" width="700" />
 
 ## Features
 - Lexer: Tokenizes input strings and supports multi-character tokens (such as == and !=).
