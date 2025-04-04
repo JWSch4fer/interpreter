@@ -1,6 +1,6 @@
 # Interpreter in Go
 
-This repository implements a simple interpreter for a custom programming language written in Go. It includes a lexer, parser, evaluator, and a REPL (Read-Eval-Print Loop) for interactive usage. The language supports basic arithmetic, boolean logic, conditionals, functions (with closures and recursion), and more.
+This repository implements a simple interpreter for a custom programming language written in Go. It includes a lexer, parser, evaluator, and a REPL for interactive usage or it can read in a file. The language supports arithmetic, boolean logic, conditionals, functions (with closures and recursion), and more.
 
 ## Demo
 <img alt="Demo" src="https://github.com/JWSch4fer/interpreter/blob/main/examples/demo.gif" width="600" />
@@ -14,12 +14,20 @@ This repository implements a simple interpreter for a custom programming languag
 
 - REPL: Interactive shell for testing code snippets.
 
+- Read File: For larger coding tasks (example available).
+
 - Error Handling: Detects and reports both syntax and runtime errors.
 
 - Testing: Comprehensive test suite covering lexer, parser, evaluator, and AST construction.
 
 ## Installation
 Ensure you have Go installed (version 1.24 or above).
+
+
+Clone the repo then execute the following:
+```
+go build .
+```
 
 ## Usage
 An example is available in example/01.sh
@@ -86,12 +94,10 @@ Bob
 ```
 
 ## Running Tests
-A comprehensive test suite is provided to validate the lexer, parser, evaluator, and AST implementation.
+A comprehensive test suite is provided to validate the lexer, parser, evaluator, Object, and AST implementation.
 
 ## Future Improvements
 - Unicode & UTF-8 Support: Currently, the lexer processes ASCII input. Consider switching from byte to rune for full UTF-8 support.
-
-- Extended Data Types: Add support for strings and additional data types.
 
 - Enhanced Error Messages: Improve debugging capabilities with more detailed error reporting.
 
