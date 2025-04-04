@@ -29,7 +29,7 @@ To run the interpreter in interactive mode:
 You will see a prompt (>>) where you can enter code. For example:
 
 ```sh
-go run main/main.go
+./interpreter
 
 starting interpreter...
 // Recursion //
