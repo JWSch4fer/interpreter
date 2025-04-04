@@ -53,6 +53,7 @@ const (
 	IF       = "IF"
 	ELSE     = "ELSE"
 	RETURN   = "RETURN"
+	NULL     = "NULL"
 )
 
 var keywords = map[string]TokenType{
@@ -64,6 +65,7 @@ var keywords = map[string]TokenType{
 	"else":   ELSE,
 	"return": RETURN,
 	"exit":   EXIT,
+	"NULL":   NULL,
 }
 
 // define language specified keywords versus user defined variables

@@ -87,8 +87,13 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		return &object.Array{Elements: elements}
 	case *ast.HashLiteral:
 		return evalHashLiteral(node, env)
+		// Add this new case in your Eval function's switch statement:
+	case *ast.IndexAssignmentStatement:
+		return evalHashAssignment(node, env)
 
-	//Expression types
+		//Expression types
+	case *ast.NULL:
+		return NULL
 	case *ast.StringLiteral:
 		return &object.String{Value: node.Value}
 	case *ast.IntegerLiteral:
@@ -134,6 +139,41 @@ func evalProgram(program *ast.Program, env *object.Environment) object.Object {
 		}
 	}
 	return result
+}
+
+func evalHashAssignment(node *ast.IndexAssignmentStatement, env *object.Environment) object.Object {
+	// Ensure that the left-hand side is an index expression.
+	indexExp, ok := node.Left.(*ast.IndexExpression)
+	if !ok {
+		return newError("invalid assignment left-hand side")
+	}
+	// Evaluate the base of the index expression; it should be a hash.
+	hashObj := Eval(indexExp.Left, env)
+	if isError(hashObj) {
+		return hashObj
+	}
+	if hashObj.Type() != object.HASH_OBJ {
+		return newError("assignment target is not a hash: %s", hashObj.Type())
+	}
+	// Evaluate the index (the key).
+	keyObj := Eval(indexExp.Index, env)
+	if isError(keyObj) {
+		return keyObj
+	}
+	// Check that the key is hashable.
+	hashKey, ok := keyObj.(object.Hashable)
+	if !ok {
+		return newError("unusable as hash key: %s", keyObj.Type())
+	}
+	// Evaluate the new value to assign.
+	val := Eval(node.Value, env)
+	if isError(val) {
+		return val
+	}
+	// Update the hash: set the new value for the key.
+	hash := hashObj.(*object.Hash)
+	hash.Pairs[hashKey.HashKey()] = object.HashPair{Key: keyObj, Value: val}
+	return val
 }
 
 func evalExpressions(

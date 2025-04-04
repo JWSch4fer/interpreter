@@ -71,6 +71,7 @@ func New(l *lexer.Lexer) *Parser {
 	p.registerPrefix(token.TRUE, p.parseBoolean)
 	p.registerPrefix(token.COMMENT, p.parseComment)
 	p.registerPrefix(token.EXIT, p.parseExit)
+	p.registerPrefix(token.NULL, p.parseNull)
 
 	p.registerPrefix(token.LBRACE, p.parseHashLiteral)
 	p.registerPrefix(token.LBRACKET, p.parseArrayLiteral)
@@ -295,6 +296,9 @@ func (p *Parser) parseBoolean() ast.Expression {
 	return &ast.Boolean{Token: p.currToken, Value: p.currTokenIs(token.TRUE)}
 }
 
+func (p *Parser) parseNull() ast.Expression {
+	return &ast.NULL{}
+}
 func (p *Parser) parseInfixExpression(left ast.Expression) ast.Expression {
 	// defer untrace(trace("parseInfixExpression"))
 
@@ -368,16 +372,39 @@ func (p *Parser) parseStatement() ast.Statement {
 	}
 }
 
-func (p *Parser) parseExpressionStatement() *ast.ExpressionStatement {
+func (p *Parser) parseExpressionStatement() ast.Statement {
 	// defer untrace(trace("parseExpressionStatement"))
 	stmt := &ast.ExpressionStatement{Token: p.currToken}
+	expr := p.parseExpression(LOWEST)
 
-	stmt.Expression = p.parseExpression(LOWEST)
+	// echeck if index expression followed assignment
+	if p.peekTokenIs(token.ASSIGN) {
+		// ensure left is IndexExpression
+		indexExpr, ok := expr.(*ast.IndexExpression)
+		if !ok {
+			p.errors = append(p.errors, fmt.Sprintf("cannot assign %s to hash", expr.String()))
+		}
+
+		//consume the =
+		p.NextToken()
+		p.NextToken()
+
+		valueExpr := p.parseExpression(LOWEST)
+		// if trailing semicolon consume it
+		if p.peekTokenIs(token.SEMICOLON) {
+			p.NextToken()
+		}
+		return &ast.IndexAssignmentStatement{
+			Token: p.currToken,
+			Left:  indexExpr,
+			Value: valueExpr,
+		}
+	}
 
 	if p.peekTokenIs(token.SEMICOLON) {
 		p.NextToken()
 	}
-
+	stmt.Expression = expr
 	return stmt
 }
 

@@ -43,7 +43,7 @@ func main() {
 
 		//Create Environment and evaluate the program
 		env := object.NewEnvironment()
-		result := evaluate.Eval(program, env)
+		_ = evaluate.Eval(program, env)
 		/*
 			TODO: need to update this right now we just print the last thing
 				that was run by the program. So if the last ast node evaluated
@@ -52,7 +52,7 @@ func main() {
 		*/
 
 		// fmt.Println(result.Type())
-		fmt.Println(result.Inspect())
+		// fmt.Println(result.Inspect())
 	} else {
 		// interactive mode
 

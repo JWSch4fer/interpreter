@@ -21,6 +21,8 @@ var builtins = map[string]*object.Builtin{
 				return &object.Integer{Value: int64(len(arg.Elements))}
 			case *object.String:
 				return &object.Integer{Value: int64(len(arg.Value))}
+			case *object.Hash:
+				return &object.Integer{Value: int64(len(arg.Pairs))}
 			default:
 				return newError("argument to `len` not supported, got %s", args[0].Type())
 			}
@@ -207,15 +209,22 @@ func init() {
 				var resultsRows []object.Object
 
 				for _, line := range lines {
-					// skip empty
-					if strings.TrimSpace(line) == "" {
-						continue
-					}
+					// empty lines
+					// if strings.TrimSpace(line) == "" {
+					// 	resultsRows = append(resultsRows, &object.Array{Elements: []object.Object{&object.String{Value: ""}}})
+					// 	// rowFields = []object.Object{&object.String{Value: ""}}
+					// 	continue
+					// }
 
-					fields := strings.Split(line, deliObj.Value)
 					var rowFields []object.Object
+					fields := strings.Split(line, deliObj.Value)
 					for _, field := range fields {
 						field = strings.TrimSpace(field)
+						if field == "" {
+							rowFields = append(rowFields, NULL)
+							continue
+						}
+
 						var converted object.Object
 						switch dataType {
 						case "INT":
@@ -236,13 +245,13 @@ func init() {
 						}
 						rowFields = append(rowFields, converted)
 					}
+
 					resultsRows = append(resultsRows, &object.Array{Elements: rowFields})
 				}
 				return &object.Array{Elements: resultsRows}
 			},
 		},
 	}
-
 }
 
 // GetBuiltinWithGetter returns the builtinWithGetter map.

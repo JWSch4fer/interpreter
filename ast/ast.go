@@ -80,6 +80,25 @@ func (p *Program) String() string {
 	return out.String()
 }
 
+type IndexAssignmentStatement struct {
+	Token token.Token
+	Left  Expression
+	Value Expression
+}
+
+func (ias *IndexAssignmentStatement) statementNode()       {}
+func (ias *IndexAssignmentStatement) TokenLiteral() string { return ias.Token.Literal }
+func (ias *IndexAssignmentStatement) String() string {
+	var out bytes.Buffer
+
+	out.WriteString(ias.Left.String())
+	out.WriteString(" = ")
+	out.WriteString(ias.Value.String())
+	out.WriteString(";")
+
+	return out.String()
+}
+
 // string methods allow to return the program as a string
 func (i *Identifier) String() string { return i.Value }
 
@@ -220,6 +239,15 @@ type Boolean struct {
 func (b *Boolean) expressionNode()      {}
 func (b *Boolean) TokenLiteral() string { return b.Token.Literal }
 func (b *Boolean) String() string       { return b.Token.Literal }
+
+// define ast boolean node
+type NULL struct {
+	Token token.Token
+}
+
+func (n *NULL) expressionNode()      {}
+func (n *NULL) TokenLiteral() string { return n.Token.Literal }
+func (n *NULL) String() string       { return n.Token.Literal }
 
 type IfExpression struct {
 	Token       token.Token
