@@ -14,7 +14,7 @@ This repository implements a simple interpreter for a custom programming languag
 
 - REPL: Interactive shell for testing code snippets.
 
-- Read File: For larger coding tasks (example available).
+- File Execution: For larger coding tasks (example available).
 
 - Error Handling: Detects and reports both syntax and runtime errors.
 
